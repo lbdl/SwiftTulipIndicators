@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CTulipIndicators",
+        "repositoryURL": "https://github.com/lbdl/CTulipIndicatorsPackage.git",
+        "state": {
+          "branch": null,
+          "revision": "277f341a0cdbbb605e9650ffeffd394822d894c3",
+          "version": "0.0.2"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
