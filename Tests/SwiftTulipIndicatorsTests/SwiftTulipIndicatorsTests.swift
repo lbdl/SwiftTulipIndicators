@@ -4,20 +4,10 @@ import Nimble
 @testable import SwiftTulipIndicators
 
 final class SwiftTulipIndicatorsTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(SwiftTulipIndicators().text, "Hello, World!")
-    }
 
-    func testInitialisation() {
-        let sut = TulipIndicatorInfo.init("hmac")
-        
-        print("foo")
+    func testInitialisationForMACD() {
+        let sut = TulipIndicatorInfo.init("macd")
+        expect(sut).toNot(beNil())
+        expect(sut?.name).to(equal("Moving Average Convergence/Divergence"))
     }
-
-    static var allTests = [
-        ("testExample", testExample),
-    ]
 }

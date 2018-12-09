@@ -2,10 +2,11 @@ import CTulipIndicators
 
 struct TulipIndicatorInfo {
     
-    let _info: UnsafePointer<ti_indicator_info>!
+    let _info: UnsafePointer<ti_indicator_info>?
     
     var name: String? {
-        guard let str = _info.pointee.full_name else {return nil}
+        guard let info = _info else { return nil}
+        guard let str = info.pointee.full_name else {return nil}
         return String(cString: str)
     }
     
