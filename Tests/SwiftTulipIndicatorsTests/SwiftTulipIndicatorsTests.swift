@@ -1,4 +1,6 @@
 import XCTest
+import Nimble
+
 @testable import SwiftTulipIndicators
 
 final class SwiftTulipIndicatorsTests: XCTestCase {
@@ -10,8 +12,8 @@ final class SwiftTulipIndicatorsTests: XCTestCase {
     }
 
     func testInitialisation() {
-        let sut = SwiftTulipIndicators.init()
-        sut.text
+        let sut = TulipIndicatorInfo.init("hmac")
+        
         print("foo")
     }
 
