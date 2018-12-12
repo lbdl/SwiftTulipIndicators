@@ -22,13 +22,17 @@ extension TIndicator {
 
 public final class Indicator {
 
-    internal var tulipInfo: TulipIndicatorInfo?
+    internal var tulipInfo: TulipIndicatorInfo!
 
     internal var inputs: [[Double]]?
 
     internal var outputs: [Double]?
 
     internal var options: [Double]?
+
+    lazy var id: String = {
+        return tulipInfo.name ?? ""
+    }()
 
     init?(_ indicator: TIndicator) {
         switch indicator {
@@ -38,6 +42,8 @@ public final class Indicator {
                 tulipInfo = info
                 inputs = i
                 options = o
+            } else {
+                return nil
             }
         case .macd(let o, let i):
             if o.count == 3 && i.count == 1 {
@@ -45,6 +51,8 @@ public final class Indicator {
                 tulipInfo = info
                 inputs = i
                 options = o
+            } else {
+                return nil
             }
         }
     }
