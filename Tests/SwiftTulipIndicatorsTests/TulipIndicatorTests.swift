@@ -45,16 +45,19 @@ class TulipIndicatorTests: QuickSpec {
                         options = [1, 2, 3]
                         inputs = [[2, 3, 4, 5, ]]
                         tInd = TIndicator.macd(options: options!, inputs: inputs!)
+                        sut = Indicator(tInd!)
                     }
 
                     it("it is the correct type") {
-                        sut = Indicator(tInd!)
                         expect(sut).to(beAKindOf(Indicator.self))
                     }
 
-                    it("return the correct identifier") {
-                        sut = Indicator(tInd!)
+                    it("it returns the correct identifier") {
                         expect(sut?.id).to(equal("macd"))
+                    }
+
+                    it("has the correct set of inputs and options") {
+                        expect(sut?.options?.count).to(equal(3))
                     }
 
                 }
