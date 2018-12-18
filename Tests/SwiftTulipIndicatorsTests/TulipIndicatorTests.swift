@@ -60,6 +60,26 @@ class TulipIndicatorTests: QuickSpec {
                         expect(sut?.options?.count).to(equal(3))
                     }
 
+                    context("MACD with options 12, 26, 9") {
+
+                        beforeEach {
+                            options = [12, 26, 9]
+                            let barsArray: [Double] = Array(repeating: 11.34, count: 28)
+                            inputs = [barsArray]
+                            tInd = TIndicator.macd(options: options!, inputs: inputs!)
+                            sut = Indicator(tInd!)
+                        }
+
+                        it("calculates the delta needed for results array as long period - 1 ") {
+                            expect(sut?.resultsSizeDelta()).to(equal(25))
+                        }
+
+                        it("creates a return array of the required capacity") {
+                            expect(sut?.resultsArray().capacity).to(beGreaterThan(2))
+                        }
+                    }
+
+
                 }
 
                 describe("GIVEN invalid params") {

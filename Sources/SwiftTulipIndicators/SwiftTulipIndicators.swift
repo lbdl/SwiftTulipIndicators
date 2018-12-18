@@ -1,9 +1,12 @@
 import CTulipIndicators
 
-
 struct TulipIndicatorInfo {
 
     private let info: UnsafePointer<ti_indicator_info>
+
+    private let barSize = MemoryLayout<Double>.size       // returns 8
+    private let barAlignment = MemoryLayout<Double>.alignment  // returns 8
+    private let barStride = MemoryLayout<Double>.stride
 
     var name: String? {
         guard let str = info.pointee.name else {
@@ -29,6 +32,10 @@ struct TulipIndicatorInfo {
 
     var numberOfOptions: Int {
         return Int(info.pointee.options)
+    }
+
+    internal func delta(_ options: [Double]) -> Int {
+       return Int(info.pointee.start(options))
     }
 
 
