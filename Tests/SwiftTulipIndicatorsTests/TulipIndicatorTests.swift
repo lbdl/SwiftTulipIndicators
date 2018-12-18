@@ -74,9 +74,28 @@ class TulipIndicatorTests: QuickSpec {
                             expect(sut?.resultsSizeDelta()).to(equal(25))
                         }
 
-                        it("creates a return array of the required capacity") {
-                            expect(sut?.resultsArray().capacity).to(beGreaterThan(2))
+                        it("creates a return array of the correct count") {
+                            expect(sut?.resultsArray().count).to(equal(3))
                         }
+
+                        it("creates arrays with the required capacity") {
+                            sut?.resultsArray().map { arr in
+                                expect(arr.capacity).to(beGreaterThan(3))
+                            }
+                        }
+                        
+                        it("calculates the correct macd"){
+                            
+                        }
+                        
+                        it("calculates the correct macd signal"){
+                            
+                        }
+                        
+                        it("calculates the correct macd histogram"){
+                            
+                        }
+
                     }
 
 

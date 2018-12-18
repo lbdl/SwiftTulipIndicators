@@ -28,6 +28,8 @@ public final class Indicator {
 
     internal var outputs: [Double]?
 
+//    internal var outputPointer: UnsafeMutableBufferPointer<Double>!
+
     internal var options: [Double]?
 
     lazy var id: String = {
@@ -41,14 +43,27 @@ public final class Indicator {
         return tulipInfo.delta(optionsArray)
     }
 
-    internal func resultsArray() -> [Double] {
+    internal func resultsArray() -> [[Double]] {
+        
         guard let inputsArray = inputs?.first else {
             fatalError("Class must have an input array")
         }
+        
+        var results: [[Double]] = []
         let newSize = inputsArray.count - resultsSizeDelta()
-        var newArray: [Double] = []
-        newArray.reserveCapacity(newSize)
-        return newArray
+
+        for _ in 0..<tulipInfo.numberOfOutputs {
+            var tmpArray: [Double] = []
+            tmpArray.reserveCapacity(newSize)
+            results.append(tmpArray)
+        }
+        
+        return results
+    }
+    
+    public func doFunction() -> [[Double]] {
+        var resInArray = resultsArray()
+        let resutArr = tulipInfo.calculateIndicator(in: inputs, out: resInArray)
     }
 
     init?(_ indicator: TIndicator) {
