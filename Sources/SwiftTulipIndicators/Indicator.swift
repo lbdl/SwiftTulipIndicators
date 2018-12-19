@@ -30,6 +30,10 @@ public final class Indicator {
 
 //    internal var outputPointer: UnsafeMutableBufferPointer<Double>!
 
+    private let tiBarSize = MemoryLayout<Double>.size       // returns 8
+    private let tiBarAlignment = MemoryLayout<Double>.alignment  // returns 8
+    private let tiBarStride = MemoryLayout<Double>.stride
+
     internal var options: [Double]?
 
     lazy var id: String = {
@@ -63,7 +67,8 @@ public final class Indicator {
     
     public func doFunction() -> [[Double]] {
         var resInArray = resultsArray()
-        let resutArr = tulipInfo.calculateIndicator(in: inputs, out: resInArray)
+        let resultArr = tulipInfo.calculateIndicator(options: options!, in: inputs!, out: &resInArray)
+        return [[3]]
     }
 
     init?(_ indicator: TIndicator) {

@@ -4,10 +4,6 @@ struct TulipIndicatorInfo {
 
     private let info: UnsafePointer<ti_indicator_info>
 
-    private let barSize = MemoryLayout<Double>.size       // returns 8
-    private let barAlignment = MemoryLayout<Double>.alignment  // returns 8
-    private let barStride = MemoryLayout<Double>.stride
-
     var name: String? {
         guard let str = info.pointee.name else {
             return nil
@@ -38,13 +34,13 @@ struct TulipIndicatorInfo {
        return Int(info.pointee.start(options))
     }
     
-    internal func indicatorFunc(Int32, UnsafePointer<UnsafePointer<Double>?>?, UnsafePointer<Double>?, UnsafePointer<UnsafeMutablePointer<Double>?>?) -> Int32 {
-        return 1
-    }
+//    internal func indicatorFunc(Int32, UnsafePointer<UnsafePointer<Double>?>?, UnsafePointer<Double>?, _: UnsafePointer<UnsafeMutablePointer<Double>?>?) -> Int32 {
+//        return 1
+//    }
 
     internal func calculateIndicator(options opts: [Double], in inputs: [[Double]], out outPuts: inout [[Double]]) -> [[Double]]? {
         guard let sz = inputs.first?.count else {fatalError("Must supply a [[Double]] input param")}
-        info.pointee.indicator(sz, )
+        let val = info.pointee.indicator(sz, inputs, info.pointee.options, &outPuts)
         return nil
     }
 
