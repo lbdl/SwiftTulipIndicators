@@ -38,9 +38,14 @@ struct TulipIndicatorInfo {
 //        return 1
 //    }
 
-    internal func calculateIndicator(options opts: [Double], in inputs: [[Double]], out outPuts: inout [[Double]]) -> [[Double]]? {
+    internal func calculateIndicator(options opts: [Double], input inputs: [[Double]], output outPuts: inout [[Double]]) -> [[Double]]? {
         guard let sz = inputs.first?.count else {fatalError("Must supply a [[Double]] input param")}
-        let val = info.pointee.indicator(sz, inputs, info.pointee.options, &outPuts)
+
+        let inputPointer = UnsafePointer<[Double]>(inputs)
+        let optionsPointer = UnsafePointer<Double>(opts)
+        var outputPointer = UnsafeMutablePointer<[Double]>(&outPuts)
+
+//        let val = info.pointee.indicator(Int32(sz), inputPointer, optionsPointer, outputPointer)
         return nil
     }
 

@@ -67,7 +67,7 @@ public final class Indicator {
     
     public func doFunction() -> [[Double]] {
         var resInArray = resultsArray()
-        let resultArr = tulipInfo.calculateIndicator(options: options!, in: inputs!, out: &resInArray)
+        let resultArr = tulipInfo.calculateIndicator(options: options!, input: inputs!, output: &resInArray)
         return [[3]]
     }
 

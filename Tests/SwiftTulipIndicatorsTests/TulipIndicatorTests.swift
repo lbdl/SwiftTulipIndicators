@@ -14,6 +14,15 @@ import Nimble
 class TulipIndicatorTests: QuickSpec {
     override func spec() {
 
+        describe("Pointer utilities"){
+            var inputs:[[Double]] = [[1,2,3], [2,3,4,5,], [1,2,3,4,5]]
+            context("shims scan function"){
+                it("") {
+
+                }
+            }
+        }
+
         describe("'TIIndicator' enum's") {
             var sut: TIndicator?
             var inputs: [[Double]]?
