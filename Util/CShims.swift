@@ -26,12 +26,19 @@ public func scan<
     return result
 }
 
-public func pointerToMutablePointers<S: Sequence, U>(_ seq: S, _ value: U) -> UnsafePointer<UnsafeMutablePointer<U>?>? {
+internal func getArrayCounts<C: Collection>(_ seq: [C]) -> [Int] {
+    let counts = Array(seq.map {
+        $0.count
+    })
+    return counts
+}
 
+public func pointerToMutablePointers<S: Sequence, U>(_ seq: S, _ value: U) -> UnsafePointer<UnsafeMutablePointer<U>?>? {
+    return nil
 }
 
 public func pointerToPointers<S: Sequence, U>(_ seq: S, _ value: U) -> UnsafePointer<UnsafePointer<U>?>? {
-
+    return nil
 }
 
 

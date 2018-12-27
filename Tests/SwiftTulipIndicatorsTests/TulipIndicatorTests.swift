@@ -15,10 +15,16 @@ class TulipIndicatorTests: QuickSpec {
     override func spec() {
 
         describe("Pointer utilities"){
-            var inputs:[[Double]] = [[1,2,3], [2,3,4,5,], [1,2,3,4,5]]
-            context("shims scan function"){
-                it("") {
 
+            var inputs:[[Double]] = [[1,2,3], [2,3,4,5,], [1,2,3,4,5]]
+            
+            context("shims count function"){
+                it("returns counts of 3,4,5") {
+                    let expected = getArrayCounts(inputs)
+                    expect(expected.count).to(equal(3))
+                    expect(expected.first).to(equal(3))
+                    expect(expected[1]).to(equal(4))
+                    expect(expected.last).to(equal(5))
                 }
             }
         }
