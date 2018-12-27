@@ -16,8 +16,28 @@ class TulipIndicatorTests: QuickSpec {
 
         describe("Pointer utilities"){
 
-            var inputs:[[Double]] = [[1,2,3], [2,3,4,5,], [1,2,3,4,5]]
-            
+            var inputs:[[Double]] = []
+
+            context("shims count function"){
+                inputs = [[1,2,3], [2,3,4,5], [1,2,3,4,5]]
+                it("returns counts of 3,4,5") {
+                    let expected = getArrayCounts(inputs)
+                    expect(expected.count).to(equal(3))
+                    expect(expected.first).to(equal(3))
+                    expect(expected[1]).to(equal(4))
+                    expect(expected.last).to(equal(5))
+                }
+                it("returns offsets 0,3,7,12"){
+                    let counts = getArrayCounts(inputs)
+                    let results = getOffsets(counts)
+                    expect(results.count).to(equal(4))
+                    expect(results.first).to(equal(0))
+                    expect(results[1]).to(equal(3))
+                    expect(results[2]).to(equal(7))
+                    expect(results[3]).to(equal(12))
+                }
+            }
+
             context("shims count function"){
                 it("returns counts of 3,4,5") {
                     let expected = getArrayCounts(inputs)
