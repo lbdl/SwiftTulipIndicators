@@ -38,8 +38,36 @@ struct TulipIndicatorInfo {
 //        return 1
 //    }
 
+    internal func pointerToMutablePointers<U>(_ seq:[[U]]) -> UnsafePointer<UnsafeMutablePointer<U>?>? {
+
+        let counts = getArrayCounts(seq)
+        let offsets = getOffsets(counts)
+
+        return seq.withUnsafeBufferPointer { (buffer) in
+            let ptr = UnsafeMutableRawPointer(mutating: buffer.baseAddress!).bindMemory(
+                to: U.self, capacity: buffer.count)
+
+            var ptrPtrs: [UnsafeMutablePointer<U>?] = offsets.map { ptr + $0 }
+            ptrPtrs[ptrPtrs.count - 1] = nil
+
+            return nil
+        }
+    }
+
+    internal func pointerToPointers(_ seq: [[Double]]) -> UnsafePointer<UnsafePointer<Double>?>? {
+
+        return seq.withUnsafeBufferPointer { (buffer) in
+            return nil
+        }
+    }
+
     internal func calculateIndicator(options opts: [Double], input inputs: [[Double]], output outPuts: inout [[Double]]) -> [[Double]]? {
         guard let sz = inputs.first?.count else {fatalError("Must supply a [[Double]] input param")}
+
+        let inputCounts = getArrayCounts(inputs)
+        let outputCounts = getArrayCounts(outPuts)
+
+        let inputOffsets = getOffsets(counts)
 
         let inputPointer = UnsafePointer<[Double]>(inputs)
         let optionsPointer = UnsafePointer<Double>(opts)

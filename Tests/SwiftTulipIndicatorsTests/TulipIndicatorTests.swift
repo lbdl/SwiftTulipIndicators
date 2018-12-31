@@ -18,7 +18,7 @@ class TulipIndicatorTests: QuickSpec {
 
             var inputs:[[Double]] = []
 
-            context("shims count function"){
+            context("shims offsets function"){
                 inputs = [[1,2,3], [2,3,4,5], [1,2,3,4,5]]
                 it("returns counts of 3,4,5") {
                     let expected = getArrayCounts(inputs)
