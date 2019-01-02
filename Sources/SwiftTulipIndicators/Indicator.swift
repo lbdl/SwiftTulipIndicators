@@ -51,8 +51,7 @@ public final class Indicator {
         let newSize = inputsArray.count - resultsSizeDelta()
 
         for _ in 0..<tulipInfo.numberOfOutputs {
-            var tmpArray: [Double] = []
-            tmpArray.reserveCapacity(newSize)
+            let tmpArray: [Double] = Array(repeating: 0, count: newSize)
             results.append(tmpArray)
         }
         

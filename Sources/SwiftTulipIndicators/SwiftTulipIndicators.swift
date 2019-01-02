@@ -49,8 +49,8 @@ struct TulipIndicatorInfo {
         
         return ins.withUnsafeBufferPointer { (inputsBuffer) in
             let inPtr = UnsafeRawPointer(inputsBuffer.baseAddress!).bindMemory(to: Double.self, capacity: inputsBuffer.count)
-            let inPuts: [UnsafePointer<Double>?] = inputOffsets.map { inPtr + $0 }
-            
+            var inPuts: [UnsafePointer<Double>?] = inputOffsets.map { inPtr + $0 }
+
             return out.withUnsafeBufferPointer { (outputsBuffer) in
                 let outPtr = UnsafeMutableRawPointer(mutating: outputsBuffer.baseAddress!).bindMemory(to: Double.self, capacity: outputsBuffer.count)
                 var outPtrPtr: [UnsafeMutablePointer<Double>?] = outPutOffsets.map { outPtr + $0 }

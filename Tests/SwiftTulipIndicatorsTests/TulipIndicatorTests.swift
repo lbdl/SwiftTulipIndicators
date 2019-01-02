@@ -27,14 +27,13 @@ class TulipIndicatorTests: QuickSpec {
                     expect(expected[1]).to(equal(4))
                     expect(expected.last).to(equal(5))
                 }
-                it("returns offsets 0,3,7,12"){
+                it("returns offsets 0,3,7"){
                     let counts = getArrayCounts(inputs)
                     let results = getOffsets(counts)
-                    expect(results.count).to(equal(4))
+                    expect(results.count).to(equal(3))
                     expect(results.first).to(equal(0))
                     expect(results[1]).to(equal(3))
                     expect(results[2]).to(equal(7))
-                    expect(results[3]).to(equal(12))
                 }
             }
 
