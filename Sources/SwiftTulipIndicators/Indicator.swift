@@ -28,12 +28,6 @@ public final class Indicator {
 
     internal var outputs: [Double]?
 
-//    internal var outputPointer: UnsafeMutableBufferPointer<Double>!
-
-    private let tiBarSize = MemoryLayout<Double>.size       // returns 8
-    private let tiBarAlignment = MemoryLayout<Double>.alignment  // returns 8
-    private let tiBarStride = MemoryLayout<Double>.stride
-
     internal var options: [Double]?
 
     lazy var id: String = {
