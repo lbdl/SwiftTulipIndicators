@@ -37,3 +37,4 @@ internal func getArrayCounts<C: Collection>(_ seq: [C]) -> [Int] {
 internal func getOffsets<S: SignedNumeric>(_ seq: [S]) -> [S] {
     return [0] + scan(seq, 0, +)
 }
+

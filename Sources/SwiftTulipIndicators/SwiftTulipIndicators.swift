@@ -2,7 +2,7 @@ import CTulipIndicators
 
 struct TulipIndicatorInfo {
 
-    private let info: UnsafePointer<ti_indicator_info>
+    internal let info: UnsafePointer<ti_indicator_info>
 
     var name: String? {
         guard let str = info.pointee.name else {
@@ -33,50 +33,30 @@ struct TulipIndicatorInfo {
     internal func delta(_ options: [Double]) -> Int {
        return Int(info.pointee.start(options))
     }
-    
-//    internal func indicatorFunc(Int32, UnsafePointer<UnsafePointer<Double>?>?, UnsafePointer<Double>?, _: UnsafePointer<UnsafeMutablePointer<Double>?>?) -> Int32 {
-//        return 1
-//    }
+        
+    internal func indicatorWithArrays<R>(inputs ins:[[Double]],
+                                         options opts: [Double],
+                                         outputs out: [[Double]],
+                                         body ti: ([UnsafePointer<Double>?], UnsafePointer<Double>?, [UnsafeMutablePointer<Double>?]) -> R) -> R {
+        
+        guard let sz = ins.first?.count else {fatalError("Must supply a [[Double]] input param")}
 
-    internal func pointerToMutablePointers<U>(_ seq:[[U]]) -> UnsafePointer<UnsafeMutablePointer<U>?>? {
-
-        let counts = getArrayCounts(seq)
-        let offsets = getOffsets(counts)
-
-        return seq.withUnsafeBufferPointer { (buffer) in
-            let ptr = UnsafeMutableRawPointer(mutating: buffer.baseAddress!).bindMemory(
-                to: U.self, capacity: buffer.count)
-
-            var ptrPtrs: [UnsafeMutablePointer<U>?] = offsets.map { ptr + $0 }
-            ptrPtrs[ptrPtrs.count - 1] = nil
-
-            return nil
+        let inputCounts = getArrayCounts(ins)
+        let inputOffsets = getOffsets(inputCounts)
+        
+        let outputCounts = getArrayCounts(out)
+        let outPutOffsets = getOffsets(outputCounts)
+        
+        return ins.withUnsafeBufferPointer { (inputsBuffer) in
+            let inPtr = UnsafeRawPointer(inputsBuffer.baseAddress!).bindMemory(to: Double.self, capacity: inputsBuffer.count)
+            let inPuts: [UnsafePointer<Double>?] = inputOffsets.map { inPtr + $0 }
+            
+            return out.withUnsafeBufferPointer { (outputsBuffer) in
+                let outPtr = UnsafeMutableRawPointer(mutating: outputsBuffer.baseAddress!).bindMemory(to: Double.self, capacity: outputsBuffer.count)
+                var outPtrPtr: [UnsafeMutablePointer<Double>?] = outPutOffsets.map { outPtr + $0 }
+                return ti(inPuts, opts, outPtrPtr)
+            }
         }
-    }
-
-    internal func pointerToPointers(_ seq: [[Double]]) -> UnsafePointer<UnsafePointer<Double>?>? {
-
-        return seq.withUnsafeBufferPointer { (buffer) in
-            return nil
-        }
-    }
-
-    internal func calculateIndicator(options opts: [Double], input inputs: [[Double]], output outPuts: inout [[Double]]) -> [[Double]]? {
-        guard let sz = inputs.first?.count else {fatalError("Must supply a [[Double]] input param")}
-
-        let inputCounts = getArrayCounts(inputs)
-        let outputCounts = getArrayCounts(outPuts)
-
-        return outPuts.withUnsafeBufferPointer { (buffer) in
-            return nil
-        }
-
-        let inputPointer = UnsafePointer<[Double]>(inputs)
-        let optionsPointer = UnsafePointer<Double>(opts)
-        var outputPointer = UnsafeMutablePointer<[Double]>(&outPuts)
-
-//        let val = info.pointee.indicator(Int32(sz), inputPointer, optionsPointer, outputPointer)
-        return nil
     }
 
 

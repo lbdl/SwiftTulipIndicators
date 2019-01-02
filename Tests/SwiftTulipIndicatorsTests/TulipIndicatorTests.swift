@@ -120,6 +120,9 @@ class TulipIndicatorTests: QuickSpec {
                         }
                         
                         it("calculates the correct macd"){
+                            sut?.doFunction().map { arr in
+                                
+                            }
                             
                         }
                         

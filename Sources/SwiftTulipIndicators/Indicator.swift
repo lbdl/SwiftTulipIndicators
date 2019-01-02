@@ -65,10 +65,21 @@ public final class Indicator {
         return results
     }
     
-    public func doFunction() -> [[Double]] {
-        var resInArray = resultsArray()
-        let resultArr = tulipInfo.calculateIndicator(options: options!, input: inputs!, output: &resInArray)
-        return [[3]]
+    /*
+     *      Imported function signatures
+     *
+     *      public typealias ti_indicator_start_function = @convention(c) (UnsafePointer<Double>?) -> Int32
+     *      public typealias ti_indicator_function = @convention(c) (Int32, UnsafePointer<UnsafePointer<Double>?>?, UnsafePointer<Double>?, UnsafePointer<UnsafeMutablePointer<Double>?>?) -> Int32
+     */
+    
+    public func doFunction() -> [[Double]]? {
+        var resArray = resultsArray()
+        guard let input = inputs, let opts = options else { fatalError("no inputs to function") }
+        return tulipInfo.indicatorWithArrays(inputs: input, options: opts, outputs: resArray) { (input, opts, outputs) in
+            let sz = inputs?.first?.count ?? 0
+            let ret = tulipInfo.info.pointee.indicator(Int32(sz), input, opts, outputs)
+            return [[1],[1]]
+        }
     }
 
     init?(_ indicator: TIndicator) {
