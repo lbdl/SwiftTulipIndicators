@@ -44,13 +44,27 @@ struct TulipIndicatorInfo {
         let inputCounts = getArrayCounts(ins)
         let inputOffsets = getOffsets(inputCounts)
         
+        //TODO remove this outputs stuff
         let outputCounts = getArrayCounts(out)
         let outPutOffsets = getOffsets(outputCounts)
         
         return ins.withUnsafeBufferPointer { (inputsBuffer) in
             let inPtr = UnsafeRawPointer(inputsBuffer.baseAddress!).bindMemory(to: Double.self, capacity: inputsBuffer.count)
             var inPuts: [UnsafePointer<Double>?] = inputOffsets.map { inPtr + $0 }
-
+            
+            defer {
+                inPuts.forEach{
+                    var ptr = UnsafeMutableRawPointer(mutating: $0)
+                    free(ptr)}
+            }
+            
+            
+            
+//            let outBuffPtr = UnsafeMutablePointer<Double>.allocate(capacity: )
+//            outBuffPtr.map { dbl in
+//
+//            }
+            //TODO: remove this as this is escaping the inputs pointers and causing crashes.
             return out.withUnsafeBufferPointer { (outputsBuffer) in
                 let outPtr = UnsafeMutableRawPointer(mutating: outputsBuffer.baseAddress!).bindMemory(to: Double.self, capacity: outputsBuffer.count)
                 var outPtrPtr: [UnsafeMutablePointer<Double>?] = outPutOffsets.map { outPtr + $0 }
