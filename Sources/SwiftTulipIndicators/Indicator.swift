@@ -87,22 +87,10 @@ public final class Indicator {
                                          outputs out: [[Double]],
                                          ti body: ([UnsafePointer<Double>?], UnsafePointer<Double>?, [UnsafeMutablePointer<Double>?]) -> R) -> R {
         
-        guard let sz = ins.first?.count else {fatalError("Must supply a [[Double]] input param")}
-        
-        var inputBuffer: [[Double]] = []
-        for arr in ins {
-            inputBuffer.append(arr)
-        }
-        
-        var outputBuffer: [[Double]] = []
-        for arr in out {
-            outputBuffer.append(arr)
-        }
-        
-        return inputBuffer.withUnsafeBufferPointer { (inputsBuffer) in
+        return ins.withUnsafeBufferPointer { (inputsBuffer) in
             var inPuts: [UnsafePointer<Double>?] = inputsBuffer.map { UnsafePointer($0) }
-            return outputBuffer.withUnsafeBufferPointer { (outputsBuffer) in
-                var outPtrPtr: [UnsafeMutablePointer<Double>?] = outputBuffer.map { UnsafeMutablePointer(mutating: $0) }
+            return out.withUnsafeBufferPointer { (outputsBuffer) in
+                var outPtrPtr: [UnsafeMutablePointer<Double>?] = outputsBuffer.map { UnsafeMutablePointer(mutating: $0) }
                 return body(inPuts, opts, outPtrPtr)
             }
         }

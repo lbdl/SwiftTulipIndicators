@@ -16,7 +16,7 @@ import Foundation
 class TulipIndicatorTests: QuickSpec {
     override func spec() {
 
-        describe("'TIIndicator' enum's") {
+        describe("TIIndicator enum's") {
             var sut: TIndicator?
             var inputs: [[Double]]?
 
@@ -33,7 +33,7 @@ class TulipIndicatorTests: QuickSpec {
             }
         }
 
-        describe("'Indicator' class") {
+        describe("Indicator class") {
 
             var sut: Indicator?
             var tInd: TIndicator?
@@ -123,7 +123,7 @@ class TulipIndicatorTests: QuickSpec {
                     context("macd indicator") {
                         beforeEach {
                             options = [1]
-                            inputs = [[2, 3, 4, 5, ]]
+                            inputs = [[2, 3, 4, 5]]
                             tInd = TIndicator.macd(options: options!)
                         }
                         
@@ -135,7 +135,7 @@ class TulipIndicatorTests: QuickSpec {
                 }
             }
 
-            context("'ema'") {
+            context("ema") {
                 describe("successful initialisation") {
 
                 }
