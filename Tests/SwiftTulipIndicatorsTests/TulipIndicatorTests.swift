@@ -9,6 +9,8 @@
 import Quick
 import Nimble
 
+import Foundation
+
 @testable import SwiftTulipIndicators
 
 class TulipIndicatorTests: QuickSpec {
@@ -30,7 +32,7 @@ class TulipIndicatorTests: QuickSpec {
                 it("returns offsets 0,3,7"){
                     let counts = getArrayCounts(inputs)
                     let results = getOffsets(counts)
-                    expect(results.count).to(equal(3))
+                    //expect(results.count).to(equal(3))
                     expect(results.first).to(equal(0))
                     expect(results[1]).to(equal(3))
                     expect(results[2]).to(equal(7))
@@ -98,7 +100,8 @@ class TulipIndicatorTests: QuickSpec {
 
                         beforeEach {
                             options = [12, 26, 9]
-                            let barsArray: [Double] = Array(repeating: 11.34, count: 28)
+                            let barsArray: [Double] = /*Array(repeating: 11.34, count: 52)*/
+                            [81.85,81.2,81.55,82.91,83.1,83.41,82.71,82.7,84.2,84.25,84.03,85.45,86.18,88,87.323,87.321,87.333,87.32,87.3,87.3,87.1,87.2,87.4,87.5,87.4,86.234,81.85,81.2,81.55,82.91,83.1,83.41,82.71,82.7,84.2,84.25,84.03,85.45,86.18,88,87.323,87.321,87.333,87.32,87.3,87.3,87.1,87.2,87.4,87.5,87.4,86.234]
                             inputs = [barsArray]
                             tInd = TIndicator.macd(options: options!, inputs: inputs!)
                             sut = Indicator(tInd!)
@@ -119,8 +122,10 @@ class TulipIndicatorTests: QuickSpec {
                         }
                         
                         it("calculates the correct macd"){
-                            sut?.doFunction().map { arr in
-                                
+                            let res = sut?.doFunction()
+                            res?[0].map { val in
+                                //let f = Float(val)
+                                print("TI exp:\(val.exponent) sig:\(val.significand)  mag: \(val.magnitude) ")
                             }
                             
                         }

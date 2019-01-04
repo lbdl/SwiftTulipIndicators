@@ -68,10 +68,85 @@ public final class Indicator {
     public func doFunction() -> [[Double]]? {
         var resArray = resultsArray()
         guard let input = inputs, let opts = options else { fatalError("no inputs to function") }
-        return tulipInfo.indicatorWithArrays(inputs: input, options: opts, outputs: resArray) { (input, opts, outputs) in
+        return indicatorWithArrays(inputs: input, options: opts, outputs: resArray) { (input, opts, outputs) in
             let sz = inputs?.first?.count ?? 0
             let ret = tulipInfo.info.pointee.indicator(Int32(sz), input, opts, outputs)
-            return [[1],[1]]
+            
+            for (index, item) in input.enumerated() {
+                let buff = UnsafeBufferPointer(start: item, count: resArray[index].count)
+                buff.map { val in
+                    let newVal = Double(val)
+                    print("TI IN ptr: \(val)")
+                }
+            }
+            for (index, item) in outputs.enumerated() {
+                let buff = UnsafeBufferPointer(start: item, count: resArray[index].count)
+                buff.map { val in
+                    let newVal = Double(val)
+                    print("TI OUT ptr: \(val)")
+                }
+                resArray[index] = Array(buff)
+            }
+            return resArray
+        }
+    }
+    
+    internal func indicatorWithArrays<R>(inputs ins:[[Double]],
+                                         options opts: [Double],
+                                         outputs out: [[Double]],
+                                         ti body: ([UnsafePointer<Double>?], UnsafePointer<Double>?, [UnsafeMutablePointer<Double>?]) -> R) -> R {
+        
+        guard let sz = ins.first?.count else {fatalError("Must supply a [[Double]] input param")}
+        
+        let inputCounts = getArrayCounts(ins)
+        var inputOffsets = getOffsets(inputCounts)
+        
+        let outputCounts = getArrayCounts(out)
+        var outputOffsets = getOffsets(outputCounts)
+        
+        var inputBuffer: [[Double]] = []
+        inputBuffer.reserveCapacity(inputOffsets.last!)
+        for arr in ins {
+            inputBuffer.append(arr)
+        }
+        
+        var outputBuffer: [[Double]] = []
+        outputBuffer.reserveCapacity(outputOffsets.last!)
+        for arr in out {
+            outputBuffer.append(arr)
+        }
+        
+//        var inBuff = UnsafeBufferPointer(start: inputBuffer, count: inputBuffer.count)
+//        var outBuff = UnsafeBufferPointer(start: outputBuffer, count: outputBuffer.count)
+//
+//        let inPtr = UnsafeRawPointer(inBuff.baseAddress!).bindMemory(to: Double.self, capacity: inBuff.count)
+//        _ = inputOffsets.popLast()
+//
+//        var inPuts: [UnsafePointer<Double>?] = inputOffsets.map {
+//            inPtr + $0
+//        }
+//
+//        let outPtr = UnsafeMutableRawPointer(mutating: outBuff.baseAddress!).bindMemory(to: Double.self, capacity: outBuff.count)
+//        _ = outputOffsets.popLast()
+//        var outPtrPtr: [UnsafeMutablePointer<Double>?] = outputOffsets.map { outPtr + $0 }
+        
+//        return body(inPuts, opts, outPtrPtr)
+        
+        return inputBuffer.withUnsafeBufferPointer { (inputsBuffer) in
+            let inPtr = UnsafePointer(inputsBuffer.baseAddress!)//.bindMemory(to: Double.self, capacity: inputsBuffer.count)
+            _ = inputOffsets.popLast()
+            var inPuts: [UnsafePointer<Double>?] = inputsBuffer.map { UnsafePointer($0) }
+
+
+            return outputBuffer.withUnsafeBufferPointer { (outputsBuffer) in
+                let outPtr = UnsafeMutableRawPointer(mutating: outputsBuffer.baseAddress!).bindMemory(to: Double.self, capacity: outputsBuffer.count)
+                _ = outputOffsets.popLast()
+                var outPtrPtr: [UnsafeMutablePointer<Double>?] = outputBuffer.map { val in
+                    let ptr = UnsafeMutablePointer(mutating: val)
+                    return ptr
+                }
+                return body(inPuts, opts, outPtrPtr)
+            }
         }
     }
 
