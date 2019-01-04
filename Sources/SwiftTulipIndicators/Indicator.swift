@@ -11,7 +11,6 @@ public enum TIndicator {
 
 private enum TIReturnType: Int32 {
     case ti_okay = 0
-    case ti_fail
 }
 
 extension TIndicator {
@@ -67,14 +66,19 @@ public final class Indicator {
         inputs = bars
         var resArray = resultsArray()
         guard let input = inputs, let opts = options else { fatalError("no inputs to function") }
+        
         return indicatorWithArrays(inputs: input, options: opts, outputs: resArray) { (input, opts, outputs) in
             let sz = inputs?.first?.count ?? 0
-            let ret = tulipInfo.info.pointee.indicator(Int32(sz), input, opts, outputs)
-            for (index, item) in outputs.enumerated() {
-                let buff = UnsafeBufferPointer(start: item, count: resArray[index].count)
-                resArray[index] = Array(buff)
+            switch TIReturnType(rawValue: tulipInfo.info.pointee.indicator(Int32(sz), input, opts, outputs)) {
+            case .ti_okay?:
+                for (index, item) in outputs.enumerated() {
+                    let buff = UnsafeBufferPointer(start: item, count: resArray[index].count)
+                    resArray[index] = Array(buff)
+                }
+                return resArray
+            case nil:
+                return nil
             }
-            return resArray
         }
     }
     
