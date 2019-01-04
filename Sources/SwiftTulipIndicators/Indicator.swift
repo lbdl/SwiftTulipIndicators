@@ -30,9 +30,7 @@ public final class Indicator {
 
     internal var inputs: [[Double]]?
 
-    internal var outputs: [Double]?
-
-    internal var options: [Double]?
+    var options: [Double]?
 
     lazy var id: String = {
         return tulipInfo.name ?? ""
@@ -88,9 +86,9 @@ public final class Indicator {
                                          ti body: ([UnsafePointer<Double>?], UnsafePointer<Double>?, [UnsafeMutablePointer<Double>?]) -> R) -> R {
         
         return ins.withUnsafeBufferPointer { (inputsBuffer) in
-            var inPuts: [UnsafePointer<Double>?] = inputsBuffer.map { UnsafePointer($0) }
+            let inPuts: [UnsafePointer<Double>?] = inputsBuffer.map { UnsafePointer($0) }
             return out.withUnsafeBufferPointer { (outputsBuffer) in
-                var outPtrPtr: [UnsafeMutablePointer<Double>?] = outputsBuffer.map { UnsafeMutablePointer(mutating: $0) }
+                let outPtrPtr: [UnsafeMutablePointer<Double>?] = outputsBuffer.map { UnsafeMutablePointer(mutating: $0) }
                 return body(inPuts, opts, outPtrPtr)
             }
         }

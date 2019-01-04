@@ -1,6 +1,6 @@
 import CTulipIndicators
 
-class TulipIndicatorInfo {
+struct TulipIndicatorInfo {
 
     internal let info: UnsafePointer<ti_indicator_info>
 
