@@ -120,19 +120,18 @@ class TulipIndicatorTests: QuickSpec {
                 }
 
                 describe("GIVEN invalid params") {
-
-                    beforeEach {
-                        options = [1]
-                        inputs = [[2, 3, 4, 5, ]]
-                        tInd = TIndicator.macd(options: options!)
+                    context("macd indicator") {
+                        beforeEach {
+                            options = [1]
+                            inputs = [[2, 3, 4, 5, ]]
+                            tInd = TIndicator.macd(options: options!)
+                        }
+                        
+                        it("it does not create an object") {
+                            sut = Indicator(tInd!)
+                            expect(sut).to(beNil())
+                        }
                     }
-
-                    it("it does not create an object") {
-                        sut = Indicator(tInd!)
-                        expect(sut).to(beNil())
-                    }
-
-
                 }
             }
 
