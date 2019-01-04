@@ -5,8 +5,13 @@
 import Foundation
 
 public enum TIndicator {
-    case ema(options: [Double], inputs: [[Double]])
-    case macd(options: [Double], inputs: [[Double]])
+    case ema(options: [Double])
+    case macd(options: [Double])
+}
+
+private enum TIReturnType: Int32 {
+    case ti_okay = 0
+    case ti_fail
 }
 
 extension TIndicator {
@@ -58,33 +63,15 @@ public final class Indicator {
         return results
     }
     
-    /*
-     *      Imported function signatures
-     *
-     *      public typealias ti_indicator_start_function = @convention(c) (UnsafePointer<Double>?) -> Int32
-     *      public typealias ti_indicator_function = @convention(c) (Int32, UnsafePointer<UnsafePointer<Double>?>?, UnsafePointer<Double>?, UnsafePointer<UnsafeMutablePointer<Double>?>?) -> Int32
-     */
-    
-    public func doFunction() -> [[Double]]? {
+    public func doFunction(_ bars: [[Double]]) -> [[Double]]? {
+        inputs = bars
         var resArray = resultsArray()
         guard let input = inputs, let opts = options else { fatalError("no inputs to function") }
         return indicatorWithArrays(inputs: input, options: opts, outputs: resArray) { (input, opts, outputs) in
             let sz = inputs?.first?.count ?? 0
             let ret = tulipInfo.info.pointee.indicator(Int32(sz), input, opts, outputs)
-            
-            for (index, item) in input.enumerated() {
-                let buff = UnsafeBufferPointer(start: item, count: resArray[index].count)
-                buff.map { val in
-                    let newVal = Double(val)
-                    print("TI IN ptr: \(val)")
-                }
-            }
             for (index, item) in outputs.enumerated() {
                 let buff = UnsafeBufferPointer(start: item, count: resArray[index].count)
-                buff.map { val in
-                    let newVal = Double(val)
-                    print("TI OUT ptr: \(val)")
-                }
                 resArray[index] = Array(buff)
             }
             return resArray
@@ -116,22 +103,6 @@ public final class Indicator {
             outputBuffer.append(arr)
         }
         
-//        var inBuff = UnsafeBufferPointer(start: inputBuffer, count: inputBuffer.count)
-//        var outBuff = UnsafeBufferPointer(start: outputBuffer, count: outputBuffer.count)
-//
-//        let inPtr = UnsafeRawPointer(inBuff.baseAddress!).bindMemory(to: Double.self, capacity: inBuff.count)
-//        _ = inputOffsets.popLast()
-//
-//        var inPuts: [UnsafePointer<Double>?] = inputOffsets.map {
-//            inPtr + $0
-//        }
-//
-//        let outPtr = UnsafeMutableRawPointer(mutating: outBuff.baseAddress!).bindMemory(to: Double.self, capacity: outBuff.count)
-//        _ = outputOffsets.popLast()
-//        var outPtrPtr: [UnsafeMutablePointer<Double>?] = outputOffsets.map { outPtr + $0 }
-        
-//        return body(inPuts, opts, outPtrPtr)
-        
         return inputBuffer.withUnsafeBufferPointer { (inputsBuffer) in
             let inPtr = UnsafePointer(inputsBuffer.baseAddress!)//.bindMemory(to: Double.self, capacity: inputsBuffer.count)
             _ = inputOffsets.popLast()
@@ -152,24 +123,22 @@ public final class Indicator {
 
     init?(_ indicator: TIndicator) {
         switch indicator {
-        case .ema(let o, let i):
-            if o.count == 1 && i.count == 1 {
+        case .ema(let o):
+            if o.count == 1 {
                 guard let info = TulipIndicatorInfo.init(indicator.stringValue()) else {
                     return nil
                 }
                 tulipInfo = info
-                inputs = i
                 options = o
             } else {
                 return nil
             }
-        case .macd(let o, let i):
-            if o.count == 3 && i.count == 1 {
+        case .macd(let o):
+            if o.count == 3 {
                 guard let info = TulipIndicatorInfo.init(indicator.stringValue()) else {
                     return nil
                 }
                 tulipInfo = info
-                inputs = i
                 options = o
             } else {
                 return nil

@@ -60,7 +60,7 @@ class TulipIndicatorTests: QuickSpec {
                     it("it inits") {
                         macdOptions = [1, 2, 3]
                         inputs = []
-                        let sut = TIndicator.macd(options: macdOptions!, inputs: inputs!)
+                        let sut = TIndicator.macd(options: macdOptions!)
                         expect(sut).toNot(beNil())
                     }
                 }
@@ -80,7 +80,7 @@ class TulipIndicatorTests: QuickSpec {
                     beforeEach {
                         options = [1, 2, 3]
                         inputs = [[2, 3, 4, 5, ]]
-                        tInd = TIndicator.macd(options: options!, inputs: inputs!)
+                        tInd = TIndicator.macd(options: options!)
                         sut = Indicator(tInd!)
                     }
 
@@ -100,11 +100,11 @@ class TulipIndicatorTests: QuickSpec {
 
                         beforeEach {
                             options = [12, 26, 9]
-                            let barsArray: [Double] = /*Array(repeating: 11.34, count: 52)*/
-                            [81.85,81.2,81.55,82.91,83.1,83.41,82.71,82.7,84.2,84.25,84.03,85.45,86.18,88,87.323,87.321,87.333,87.32,87.3,87.3,87.1,87.2,87.4,87.5,87.4,86.234,81.85,81.2,81.55,82.91,83.1,83.41,82.71,82.7,84.2,84.25,84.03,85.45,86.18,88,87.323,87.321,87.333,87.32,87.3,87.3,87.1,87.2,87.4,87.5,87.4,86.234]
+                            let barsArray: [Double] = [81.85,81.2,81.55,82.91,83.1,83.41,82.71,82.7,84.2,84.25,84.03,85.45,86.18,88,87.323,87.321,87.333,87.32,87.3,87.3,87.1,87.2,87.4,87.5,87.4,86.234,81.85,81.2,81.55,82.91,83.1,83.41,82.71,82.7,84.2,84.25,84.03,85.45,86.18,88,87.323,87.321,87.333,87.32,87.3,87.3,87.1,87.2,87.4,87.5,87.4,86.234]
                             inputs = [barsArray]
-                            tInd = TIndicator.macd(options: options!, inputs: inputs!)
+                            tInd = TIndicator.macd(options: options!)
                             sut = Indicator(tInd!)
+                            sut?.doFunction(inputs!)
                         }
 
                         it("calculates the delta needed for results array as long period - 1 ") {
@@ -121,13 +121,17 @@ class TulipIndicatorTests: QuickSpec {
                             }
                         }
                         
+                        it("runs the macd function and returns") {
+                            let res = sut?.doFunction(inputs!)
+                            expect(res?.count).to(equal(3))
+                            expect(res?[0].count).to(equal(27))
+                        }
+                        
                         it("calculates the correct macd"){
-                            let res = sut?.doFunction()
-                            res?[0].map { val in
-                                //let f = Float(val)
-                                print("TI exp:\(val.exponent) sig:\(val.significand)  mag: \(val.magnitude) ")
-                            }
-                            
+                            let res = sut?.doFunction(inputs!)
+                            expect(res?[0][0]).to(beCloseTo(1.0525))
+                            expect(res?[0][1]).to(beCloseTo(0.6051))
+                            expect(res?[0][2]).to(beCloseTo(0.1978))
                         }
                         
                         it("calculates the correct macd signal"){
@@ -148,7 +152,7 @@ class TulipIndicatorTests: QuickSpec {
                     beforeEach {
                         options = [1]
                         inputs = [[2, 3, 4, 5, ]]
-                        tInd = TIndicator.macd(options: options!, inputs: inputs!)
+                        tInd = TIndicator.macd(options: options!)
                     }
 
                     it("it does not create an object") {
