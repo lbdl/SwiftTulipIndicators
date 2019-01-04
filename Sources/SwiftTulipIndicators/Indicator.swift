@@ -85,37 +85,20 @@ public final class Indicator {
         
         guard let sz = ins.first?.count else {fatalError("Must supply a [[Double]] input param")}
         
-        let inputCounts = getArrayCounts(ins)
-        var inputOffsets = getOffsets(inputCounts)
-        
-        let outputCounts = getArrayCounts(out)
-        var outputOffsets = getOffsets(outputCounts)
-        
         var inputBuffer: [[Double]] = []
-        inputBuffer.reserveCapacity(inputOffsets.last!)
         for arr in ins {
             inputBuffer.append(arr)
         }
         
         var outputBuffer: [[Double]] = []
-        outputBuffer.reserveCapacity(outputOffsets.last!)
         for arr in out {
             outputBuffer.append(arr)
         }
         
         return inputBuffer.withUnsafeBufferPointer { (inputsBuffer) in
-            let inPtr = UnsafePointer(inputsBuffer.baseAddress!)//.bindMemory(to: Double.self, capacity: inputsBuffer.count)
-            _ = inputOffsets.popLast()
             var inPuts: [UnsafePointer<Double>?] = inputsBuffer.map { UnsafePointer($0) }
-
-
             return outputBuffer.withUnsafeBufferPointer { (outputsBuffer) in
-                let outPtr = UnsafeMutableRawPointer(mutating: outputsBuffer.baseAddress!).bindMemory(to: Double.self, capacity: outputsBuffer.count)
-                _ = outputOffsets.popLast()
-                var outPtrPtr: [UnsafeMutablePointer<Double>?] = outputBuffer.map { val in
-                    let ptr = UnsafeMutablePointer(mutating: val)
-                    return ptr
-                }
+                var outPtrPtr: [UnsafeMutablePointer<Double>?] = outputBuffer.map { UnsafeMutablePointer(mutating: $0) }
                 return body(inPuts, opts, outPtrPtr)
             }
         }

@@ -16,40 +16,6 @@ import Foundation
 class TulipIndicatorTests: QuickSpec {
     override func spec() {
 
-        describe("Pointer utilities"){
-
-            var inputs:[[Double]] = []
-
-            context("shims offsets function"){
-                inputs = [[1,2,3], [2,3,4,5], [1,2,3,4,5]]
-                it("returns counts of 3,4,5") {
-                    let expected = getArrayCounts(inputs)
-                    expect(expected.count).to(equal(3))
-                    expect(expected.first).to(equal(3))
-                    expect(expected[1]).to(equal(4))
-                    expect(expected.last).to(equal(5))
-                }
-                it("returns offsets 0,3,7"){
-                    let counts = getArrayCounts(inputs)
-                    let results = getOffsets(counts)
-                    //expect(results.count).to(equal(3))
-                    expect(results.first).to(equal(0))
-                    expect(results[1]).to(equal(3))
-                    expect(results[2]).to(equal(7))
-                }
-            }
-
-            context("shims count function"){
-                it("returns counts of 3,4,5") {
-                    let expected = getArrayCounts(inputs)
-                    expect(expected.count).to(equal(3))
-                    expect(expected.first).to(equal(3))
-                    expect(expected[1]).to(equal(4))
-                    expect(expected.last).to(equal(5))
-                }
-            }
-        }
-
         describe("'TIIndicator' enum's") {
             var sut: TIndicator?
             var inputs: [[Double]]?
@@ -135,11 +101,17 @@ class TulipIndicatorTests: QuickSpec {
                         }
                         
                         it("calculates the correct macd signal"){
-                            
+                            let res = sut?.doFunction(inputs!)
+                            expect(res?[1][0]).to(beCloseTo(1.0525))
+                            expect(res?[1][1]).to(beCloseTo(0.9630))
+                            expect(res?[1][2]).to(beCloseTo(0.8100))
                         }
                         
                         it("calculates the correct macd histogram"){
-                            
+                            let res = sut?.doFunction(inputs!)
+                            expect(res?[2][0]).to(beCloseTo(0))
+                            expect(res?[2][1]).to(beCloseTo(-0.3579))
+                            expect(res?[2][2]).to(beCloseTo(-0.6122))
                         }
 
                     }
