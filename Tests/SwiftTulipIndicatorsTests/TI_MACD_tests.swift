@@ -1,5 +1,5 @@
 //
-//  TulipIndicatorTests.swift
+//  TI_MACD_tests.swift
 //  SwiftTulipIndicators
 //
 //  Created by Timothy Storey on 2018-12-12.
@@ -13,7 +13,7 @@ import Foundation
 
 @testable import SwiftTulipIndicators
 
-class TulipIndicatorTests: QuickSpec {
+class TI_MACD_tests: QuickSpec {
     override func spec() {
 
         describe("TIIndicator enum's") {
@@ -133,16 +133,6 @@ class TulipIndicatorTests: QuickSpec {
                         }
                     }
                 }
-            }
-
-            context("ema") {
-                describe("successful initialisation") {
-
-                }
-                describe("failing initialisation") {
-
-                }
-
             }
 
         }
