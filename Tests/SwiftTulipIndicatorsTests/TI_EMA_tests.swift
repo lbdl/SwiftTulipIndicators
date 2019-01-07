@@ -55,6 +55,38 @@ class TI_EMA_tests: QuickSpec {
                                66.4,66.4,66.5
                         ]]
                 }
+                describe("EMA calculations, with inputs") {
+                    
+                    it("it returns 1 output array") {
+                        expect(sut.tulipInfo.numberOfOutputs).to(equal(1))
+                    }
+                    
+                    it("with options set to 5 the delta is 0") {
+                        expect(sut.tulipInfo.delta(options)).to(equal(0))
+                    }
+                    
+                    it("the output array is the same size as the inputs array") {
+                        let actual = sut.doFunction(inputs)
+                        expect(actual?.count).to(equal(inputs.count))
+                        expect(actual?[0].count).to(equal(inputs[0].count))
+                    }
+                    
+                    it("correctly calculates ema over a range of input bars") {
+                        let actual = sut.doFunction(inputs)
+                        expect(actual?[0][0]).to(beCloseTo(11.48))
+                        expect(actual?[0][1]).to(beCloseTo(11.84))
+                        expect(actual?[0][2]).to(beCloseTo(31.16))
+                        expect(actual?[0][3]).to(beCloseTo(44.2067))
+                        expect(actual?[0][4]).to(beCloseTo(52.7378))
+                        expect(actual?[0][5]).to(beCloseTo(58.2919))
+                        expect(actual?[0][6]).to(beCloseTo(61.8279))
+                        expect(actual?[0][7]).to(beCloseTo(64.2853))
+                        expect(actual?[0][8]).to(beCloseTo(66.2235))
+                        expect(actual?[0][9]).to(beCloseTo(67.3823))
+                        expect(actual?[0][10]).to(beCloseTo(67.9549))
+                        expect(actual?[0][11]).to(beCloseTo(68.1699))
+                    }
+                }
             }
         }
 
