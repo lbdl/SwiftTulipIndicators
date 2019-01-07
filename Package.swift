@@ -13,8 +13,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/lbdl/CTulipIndicatorsPackage.git", from: "0.0.2"),
-        .package(url: "https://github.com/Quick/Quick.git", .branch("master")),
-        .package(url: "https://github.com/Quick/Nimble.git", .branch("master")),
+        .package(url: "https://github.com/Quick/Quick.git", .from("1.3.2")),
+        .package(url: "https://github.com/Quick/Nimble.git", .from("7.3.1")),
         ],
     targets: [
         .target(
