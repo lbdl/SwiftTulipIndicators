@@ -5,8 +5,12 @@
 import Foundation
 
 public enum TIndicator {
-    case ema(options: [Double], inputs: [[Double]])
-    case macd(options: [Double], inputs: [[Double]])
+    case ema(options: [Double])
+    case macd(options: [Double])
+}
+
+private enum TIReturnType: Int32 {
+    case ti_okay = 0
 }
 
 extension TIndicator {
@@ -26,9 +30,7 @@ public final class Indicator {
 
     internal var inputs: [[Double]]?
 
-    internal var outputs: [Double]?
-
-    internal var options: [Double]?
+    var options: [Double]?
 
     lazy var id: String = {
         return tulipInfo.name ?? ""
@@ -41,36 +43,75 @@ public final class Indicator {
         return tulipInfo.delta(optionsArray)
     }
 
-    internal func resultsArray() -> [Double] {
+    internal func resultsArray() -> [[Double]] {
+        
         guard let inputsArray = inputs?.first else {
             fatalError("Class must have an input array")
         }
+        
+        var results: [[Double]] = []
         let newSize = inputsArray.count - resultsSizeDelta()
-        var newArray: [Double] = []
-        newArray.reserveCapacity(newSize)
-        return newArray
+
+        for _ in 0..<tulipInfo.numberOfOutputs {
+            let tmpArray: [Double] = Array(repeating: 0, count: newSize)
+            results.append(tmpArray)
+        }
+        
+        return results
+    }
+    
+    public func doFunction(_ bars: [[Double]]) -> [[Double]]? {
+        inputs = bars
+        var resArray = resultsArray()
+        guard let input = inputs, let opts = options else { fatalError("no inputs to function") }
+        
+        return indicatorWithArrays(inputs: input, options: opts, outputs: resArray) { (input, opts, outputs) in
+            let sz = inputs?.first?.count ?? 0
+            switch TIReturnType(rawValue: tulipInfo.info.pointee.indicator(Int32(sz), input, opts, outputs)) {
+            case .ti_okay?:
+                for (index, item) in outputs.enumerated() {
+                    let buff = UnsafeBufferPointer(start: item, count: resArray[index].count)
+                    resArray[index] = Array(buff)
+                }
+                return resArray
+            case nil:
+                return nil
+            }
+        }
+    }
+    
+    internal func indicatorWithArrays<R>(inputs ins:[[Double]],
+                                         options opts: [Double],
+                                         outputs out: [[Double]],
+                                         ti body: ([UnsafePointer<Double>?], UnsafePointer<Double>?, [UnsafeMutablePointer<Double>?]) -> R) -> R {
+        
+        return ins.withUnsafeBufferPointer { (inputsBuffer) in
+            let inPuts: [UnsafePointer<Double>?] = inputsBuffer.map { UnsafePointer($0) }
+            return out.withUnsafeBufferPointer { (outputsBuffer) in
+                let outPtrPtr: [UnsafeMutablePointer<Double>?] = outputsBuffer.map { UnsafeMutablePointer(mutating: $0) }
+                return body(inPuts, opts, outPtrPtr)
+            }
+        }
     }
 
     init?(_ indicator: TIndicator) {
         switch indicator {
-        case .ema(let o, let i):
-            if o.count == 1 && i.count == 1 {
+        case .ema(let o):
+            if o.count == 1 {
                 guard let info = TulipIndicatorInfo.init(indicator.stringValue()) else {
                     return nil
                 }
                 tulipInfo = info
-                inputs = i
                 options = o
             } else {
                 return nil
             }
-        case .macd(let o, let i):
-            if o.count == 3 && i.count == 1 {
+        case .macd(let o):
+            if o.count == 3 {
                 guard let info = TulipIndicatorInfo.init(indicator.stringValue()) else {
                     return nil
                 }
                 tulipInfo = info
-                inputs = i
                 options = o
             } else {
                 return nil
