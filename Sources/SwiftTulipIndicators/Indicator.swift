@@ -94,7 +94,7 @@ public final class Indicator {
         }
     }
 
-    init?(_ indicator: TIndicator) {
+    public init?(_ indicator: TIndicator) {
         switch indicator {
         case .ema(let o):
             if o.count == 1 {
